@@ -1,16 +1,64 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <!-- net10.0: SPT 4.1 server mods target the same framework the server itself runs on. -->
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <Version>3.0.0</Version>
+    <Authors>McOnie</Authors>
+    <RootNamespace>WeaponAttachmentModifier</RootNamespace>
+    <AssemblyName>WeaponAttachmentModifier</AssemblyName>
+
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SPTarkov.Common" Version="4.0.3" />
-    <PackageReference Include="SPTarkov.DI" Version="4.0.3" />
-    <PackageReference Include="SPTarkov.Reflection" Version="4.0.3" />
-    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.3" />
+    <!-- The 4.1 packages are published as SPTushonka.*; the assemblies inside are still
+         SPTarkov.*, so the using directives are unchanged from 4.0. -->
+    <PackageReference Include="SPTushonka.Common" Version="4.1.5" />
+    <PackageReference Include="SPTushonka.DI" Version="4.1.5" />
+    <PackageReference Include="SPTushonka.Server.Core" Version="4.1.5" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- client/ is its own project (netstandard2.1, BepInEx). Without this the server project's
+         default glob would pull the plugin sources - and client/obj's generated AssemblyInfo -
+         into this assembly. -->
+    <Compile Remove="client\**" />
+    <None Remove="client\**" />
+    <EmbeddedResource Remove="client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The shipped default config. Copied next to the dll so a fresh install starts neutral
+         instead of throwing on a missing file. -->
+    <None Include="config\config.jsonc" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    Drop the built mod straight into the server's user\mods folder.
+    Skip with -p:SkipDeploy=true (or point SptRoot at CHANGE_ME) when the server is running and
+    holding the dll open.
+    Windows-only, because SptRoot is a Windows path: a Linux/CI build would otherwise create a
+    directory literally named "E:\SPT 4.1" in the repo. Pass -p:OS=Windows_NT to exercise the
+    deploy anyway.
+  -->
+  <Target Name="DeployToSpt" AfterTargets="Build"
+          Condition="'$(OS)' == 'Windows_NT' AND '$(SkipDeploy)' != 'true' AND '$(SptModsDir)' != '' AND '$(SptRoot)' != 'CHANGE_ME'">
+    <PropertyGroup>
+      <ModDeployDir>$(SptModsDir)\WeaponAttachmentModifier\</ModDeployDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(ModDeployDir);$(ModDeployDir)config" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModDeployDir)"
+          SkipUnchangedFiles="false" ContinueOnError="WarnAndContinue" />
+    <!-- Never overwrite a config the player has edited. -->
+    <Copy SourceFiles="config\config.jsonc" DestinationFolder="$(ModDeployDir)config"
+          Condition="!Exists('$(ModDeployDir)config\config.jsonc')" ContinueOnError="WarnAndContinue" />
+    <Message Text="Deployed $(TargetFileName) to $(ModDeployDir)" Importance="high" />
+  </Target>
 
 </Project>
