@@ -133,3 +133,5 @@ $RECYCLE.BIN/
 _NCrunch*
 
 .vs
+# Machine-local build settings (SptRoot)
+local.props

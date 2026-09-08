@@ -1,0 +1,109 @@
+{
+  // Weapon Attachment Modifier - server config.
+  //
+  // Everything below is neutral by default: multipliers are 1 and both override switches are
+  // off, so a fresh install changes nothing until you edit it.
+  //
+  // If you also run the BepInEx client plugin, its F12 sliders apply ON TOP of whatever this
+  // file produces. Leave this file neutral and tune with F12, or leave F12 neutral and tune
+  // here - setting both means they stack.
+  //
+  // Each stat block takes the same five keys, checked in this order:
+  //   EnableHardSetOverride / HardSetOverrideValue  -> ignore the item's value, use this one
+  //   EnableAdditiveOverride / AdditiveOverrideValue -> item's value + this one
+  //   Multiplier                                     -> see the rules below
+  //
+  // Ergonomics multiplier:
+  //   positive ergo (a buff)    is MULTIPLIED  (+10 ergo at 2.0 -> +20)
+  //   negative ergo (a penalty) is DIVIDED     (-10 ergo at 2.0 ->  -5)
+  //   so >1 is always "better gun", <1 is always "worse gun".
+  // Recoil multiplier:
+  //   plain multiply (-20% at 1.5 -> -30%). >1 = more recoil reduction.
+  // Durability burn multiplier:
+  //   plain multiply (+50% at 1.5 -> +75%). >1 = barrel wears faster.
+
+  "ForegripErgonomics": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+  "ForegripRecoil": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+
+  "StockErgonomics": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+  "StockRecoil": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+
+  "PistolGripErgonomics": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+
+  // Muzzle devices = muzzle brakes/compensators, suppressors and thread adapters.
+  "MuzzleDeviceErgonomics": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+  "MuzzleDeviceRecoil": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+  "MuzzleDeviceDurability": {
+    "EnableHardSetOverride": false,
+    "HardSetOverrideValue": 0,
+    "EnableAdditiveOverride": false,
+    "AdditiveOverrideValue": 0,
+    "Multiplier": 1.0
+  },
+
+  // Per-item hard sets. An item listed here is set to exactly these values and skips its
+  // category's tuning entirely. Only the fields you include are touched, and a field is
+  // ignored if the item does not have that stat to begin with.
+  //
+  // These are server-side only - the F12 plugin has no list editor, so per-item work lives
+  // here. ItemId is the template id you can copy out of the SPT item database or give-ui.
+  //
+  // Example (delete the leading // to use it):
+  //
+  // "SpecificAttachmentOverrides": [
+  //   {
+  //     "ItemId": "5c7fc87d2e2216001a1267e5",
+  //     "Name": "SRVV MBR Handguard",
+  //     "ErgonomicsOverride": -1,
+  //     "RecoilPercentageOverride": -5
+  //   },
+  //   {
+  //     "ItemId": "5a34fd2bc4a282329a73b4c5",
+  //     "Name": "Rotor 43 9x19 Suppressor",
+  //     "DurabilityBurnOverride": 1.1
+  //   }
+  // ]
+  "SpecificAttachmentOverrides": []
+}
