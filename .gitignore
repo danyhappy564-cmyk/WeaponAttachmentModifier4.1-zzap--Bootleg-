@@ -135,3 +135,4 @@ _NCrunch*
 .vs
 # Machine-local build settings (SptRoot)
 local.props
+release/
